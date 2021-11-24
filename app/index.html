@@ -1,58 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>Buzzer app</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <meta charset="UTF-8">
+  <title>Buzzer app</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://cdn.socket.io/4.4.0/socket.io.min.js"></script>
+  <script defer src="./app.js"></script>
 </head>
+
 <body>
-    <div class="navbar">
-        <div class="left">
-            <h3>
-                Status : <span id="ws-status"></span>
-            </h3>
-        </div>
-        <div class="right">
-            <a href="" id="admin-btn" class="btn">ADMIN</a>
-        </div>
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">
+        Status : <span id="ws-status">t</span>
+      </span>
+      <form action="/admin" method="post">
+        <input id="admin-input" name="pass" class="form-control me-2" type="password" required>
+        <button id="admin-btn" class="btn btn-outline-warning" type="submit">ADMIN</button>
+      </form>
     </div>
+  </nav>
 
-    <div class="container">
-	    <input id="pseudo" type="text">
-        <button id="buzzer-btn" class="btn" disabled>
-            BUZZER
-        </button>
-    </div>
-
-   <script src="https://cdn.socket.io/4.4.0/socket.io.min.js" integrity="sha384-1fOn6VtTq3PWwfsOrk45LnYcGosJwzMHv+Xh/Jx5303FVOXzEnw0EpLv30mtjmlj" crossorigin="anonymous"></script>
-    <script>
-        const socket = io("ws://med.gmcweb.fr:8080");
-        let wsStatus = document.querySelector("#ws-status");
-        let buzzerBtn = document.querySelector("#buzzer-btn");
-        let adminBtn = document.querySelector("#admin-btn");
-	let pseudo = document.querySelector("#pseudo");
-
-        adminBtn.addEventListener('click', (e) => {
-		e.preventDefault();
-            io.emit('enabledBuzzer', true); 
-        });
-
-	buzzerBtn.addEventListener('click', () => {
-		io.emit('buzz', pseudo.value);
-	});
-	
-socket.on('connect', () => {
-            
-            socket.on('enabledBuzzer', (data) => {
-                buzzerBtn.disabled = false;
-            });
-
-            socket.on('buzz', (data) => {
-                console.log(data);
-            });
-
-        });
-
-    </script>
+  <div class="container">
+    <input id="pseudo" type="text" class="form-control" placeholder="Username">
+    <button id="buzzer-btn" class="btn" disabled>
+      <img src="./img/buzzer.png" alt="">
+    </button>
+  </div>
 </body>
+
 </html>

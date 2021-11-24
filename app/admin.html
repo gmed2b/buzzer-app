@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Buzzer app</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://cdn.socket.io/4.4.0/socket.io.min.js"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">
+        Status : <span id="ws-status">t</span>
+      </span>
+
+      <button id="clear" class="btn btn-outline-warning">clear</button>
+      <button id="enable-buzz-btn" class="btn btn-outline-warning">ENABLE</button>
+      <!-- <input id="admin-input" class="form-control me-2" type="search">
+      <button id="admin-btn" class="btn btn-outline-warning" type="submit">ADMIN</button> -->
+    </div>
+  </nav>
+
+  <div class="container">
+    <ul class="list-group">
+
+    </ul>
+  </div>
+
+  <script>
+    const socket = io("ws://med.gmcweb.fr:8080");
+
+    let wsStatus = document.querySelector("#ws-status");
+    let list = document.querySelector("ul.list-group");
+    let enableBuzzer = document.querySelector("#enable-buzz-btn");
+    let clear = document.querySelector("#clear");
+
+    clear.addEventListener("click", () => {
+      list.innerHTML = "";
+    });
+
+    enableBuzzer.addEventListener("click", () => {
+      socket.emit("enable-buzzer");
+      list.innerHTML += `<li class="list-group-item">---------------------</li>`;
+    });
+
+    wsStatus.innerHTML = "Disconnected";
+    /*
+    **  ON SOCKET REQUEST
+    */
+    socket.on('connect', () => {
+      wsStatus.innerHTML = "Connected";
+
+      socket.on('buzzed', (data) => {
+        list.innerHTML +=
+          `<li class="list-group-item justify-content-between">
+          <div class="row justify-content-between">
+            <div class="col-4">
+              ${data.username}
+            </div>
+            <div class="col-4">
+              ${data.date}
+            </div>
+          </div>
+        </li>`;
+      });
+
+    });
+  </script>
+</body>
+
+</html>
