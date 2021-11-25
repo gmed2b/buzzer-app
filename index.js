@@ -4,7 +4,6 @@ const http = require("http").createServer(app);
 const io = require("socket.io")(http, {
   cors: { origin: "*" },
 });
-const bodyParser = require('body-parser');
 
 const ADMINPSW = "antonlecrack";
 const DIRECTORY = __dirname + "/app";
