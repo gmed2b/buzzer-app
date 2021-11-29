@@ -24,8 +24,21 @@ app.post('/admin', (req,res) => {
   }
 });
 
+let users = [];
+
 io.on('connection', (socket) => {
   console.log("a user connected :" + socket.id);
+
+  socket.on('ready', (data) => {
+    if(data.status === true) {
+      users.push(data.pseudo);
+      io.emit('onReady', users);
+    }
+    else {
+      users = users.filter(user => user !== data.pseudo);
+      io.emit('onReady', users);
+    }
+  });
 
   socket.on('buzz', (pseudo) => {
     console.log("buzzed : " + pseudo);
@@ -36,8 +49,17 @@ io.on('connection', (socket) => {
     io.emit('buzzed', {username: pseudo, date: timestamp});
   });
 
+  socket.on('admin-connected', () => {
+    io.emit('onReady', users);
+  });
+
   socket.on('enable-buzzer', () => {
     io.emit('enable-buzzer');
+  });
+
+  socket.on('clear', () => {
+    users = [];
+    io.emit('clearUser');
   });
 
 });

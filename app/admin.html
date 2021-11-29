@@ -23,24 +23,39 @@
   </nav>
 
   <div class="container">
-    <ul class="list-group">
-
-    </ul>
+    <div class="row pt-3">
+      <div class="col-4">
+        <h3>Liste des participents :</h3>
+        <ul id="list-participants" class="list-group">
+        </ul>
+      </div>
+      <div class="col-7">
+        <h3>Classement :</h3>
+        <ul id="classement" class="list-group">
+        </ul>
+      </div>
+    </div>
   </div>
 
   <script>
     const socket = io("ws://med.gmcweb.fr:8080");
 
     let wsStatus = document.querySelector("#ws-status");
-    let list = document.querySelector("ul.list-group");
+    let list = document.querySelector("#classement");
+    let listParticipants = document.querySelector("#list-participants");
     let enableBuzzer = document.querySelector("#enable-buzz-btn");
     let clear = document.querySelector("#clear");
 
     clear.addEventListener("click", () => {
       list.innerHTML = "";
+      listParticipants.innerHTML = "";
+      socket.emit('clear');
     });
 
     enableBuzzer.addEventListener("click", () => {
+      list.innerHTML = "";
+      listParticipants.innerHTML = "";
+      socket.emit('clear');
       socket.emit("enable-buzzer");
       list.innerHTML += `<li class="list-group-item">---------------------</li>`;
     });
@@ -51,19 +66,34 @@
     */
     socket.on('connect', () => {
       wsStatus.innerHTML = "Connected";
+      socket.emit('admin-connected');
+
+      socket.on('onReady', (data) => {
+        listParticipants.innerHTML = "";
+        console.log(data);
+        data.forEach(element => {
+          let li = document.createElement("li");
+          li.classList.add("list-group-item");
+          li.innerText = element;
+          listParticipants.appendChild(li);
+        });
+      });
 
       socket.on('buzzed', (data) => {
-        list.innerHTML +=
-          `<li class="list-group-item justify-content-between">
-          <div class="row justify-content-between">
-            <div class="col-4">
-              ${data.username}
-            </div>
-            <div class="col-4">
-              ${data.date}
-            </div>
-          </div>
-        </li>`;
+        let li = document.createElement("li");
+        li.classList.add("list-group-item", "justify-content-between");
+        let div = document.createElement("div");
+        div.classList.add("row", "justify-content-between");
+        let userDiv = document.createElement("div");
+        userDiv.classList.add("col-4");
+        let dateDiv = document.createElement("div");
+        dateDiv.classList.add("col-4");
+        userDiv.innerText = data.username;
+        dateDiv.innerText = data.date;
+        div.appendChild(userDiv);
+        div.appendChild(dateDiv);
+        li.appendChild(div);
+        list.appendChild(li);
       });
 
     });

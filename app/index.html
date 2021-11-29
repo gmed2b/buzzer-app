@@ -15,16 +15,20 @@
       <span class="navbar-brand mb-0 h1">
         Status : <span id="ws-status">t</span>
       </span>
-      <form action="/admin" method="post">
+      <form action="/admin" method="post" class="d-inline-flex">
         <input id="admin-input" name="pass" class="form-control me-2" type="password" required>
         <button id="admin-btn" class="btn btn-outline-warning" type="submit">ADMIN</button>
       </form>
     </div>
   </nav>
 
-  <div class="container">
-    <input id="pseudo" type="text" class="form-control" placeholder="Username">
-    <button id="buzzer-btn" class="btn" disabled>
+  <div class="container d-flex flex-column justify-content-center pt-5">
+    <div class="row align-items-center">
+      <h4>Entrer votre nom :</h4>
+      <input id="pseudo" type="text" class="form-control w-25 mx-3" placeholder="Username">
+      <button id="ready-btn" class="btn btn-danger mx-3">READY</button>
+    </div>
+    <button id="buzzer-btn" class="btn my-5" disabled>
       <img src="./img/buzzer.png" alt="">
     </button>
   </div>
